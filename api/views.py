@@ -42,9 +42,11 @@ def restaurante_create(request):
     if request.method == "POST":
         try:
             id_restaurante = request.POST["id"]
+            if not(id_restaurante):
+                raise Exception("no se ha ingresado un id")
             # SI ya existe un restaurante con el ID se lanza una excepcion
             if Restaurante.objects.filter(id=id_restaurante):
-                raise Exception("ya existe un restaurante con este ID")
+                raise Exception("ya existe un restaurante con este id")
 
             # Lanza una excepcion en caso de que el rating no este en el rango
             rating = request.POST["rating"]
@@ -84,9 +86,10 @@ def restaurante_delete(request, id_restaurante):
 
 # Actualizar datos de un restaurante
 @csrf_exempt
-def restaurante_update(request, id_restaurante):
+def restaurante_update(request):
     if request.method == "POST":
         try:
+            id_restaurante = request.POST["id"]
             restaurante = Restaurante.objects.get(id=id_restaurante)
             restaurante.rating = request.POST["rating"]
             restaurante.name = request.POST["name"]
